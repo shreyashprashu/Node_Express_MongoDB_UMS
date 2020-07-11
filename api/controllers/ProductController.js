@@ -16,7 +16,7 @@ exports.products_get_all = (req, res, next) => {
             _id: doc._id,
             request: {
               type: "GET",
-              url: "http://localhost:3000/products/" + doc._id
+              url: "http://localhost:5000/products/" + doc._id
             }
           };
         })
@@ -38,11 +38,21 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.products_create_product = (req, res, next) => {
+  console.log("ghgdg",req.body);
+  //console.log("FASFSA", req);
+  // res.status(200).json({
+  //   success: true
+  // });
+  if (!req.file) return res.send('Please upload a file')
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
-    productImage: req.file.path
+    // name: req.body.body.name,
+    // price: req.body.body.price,
+   // productImage: req.body.body.productImage
+//res.file.path
+   productImage: req.file.path
   });
   product
     .save()
@@ -53,10 +63,11 @@ exports.products_create_product = (req, res, next) => {
         createdProduct: {
           name: result.name,
           price: result.price,
+          productImage:result.productImage,
           _id: result._id,
           request: {
             type: "GET",
-            url: "http://localhost:3000/products/" + result._id
+            url: "http://localhost:5000/products/" + result._id
           }
         }
       });
