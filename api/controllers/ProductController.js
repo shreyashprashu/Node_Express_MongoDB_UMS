@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product");
-
+var path = require('path');
 exports.products_get_all = (req, res, next) => {
   Product.find()
     .select("name price _id productImage")
@@ -38,21 +38,19 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.products_create_product = (req, res, next) => {
-  console.log("ghgdg",req.body);
-  //console.log("FASFSA", req);
-  // res.status(200).json({
-  //   success: true
-  // });
-  if (!req.file) return res.send('Please upload a file')
+if(!req.file){
+   var imagepath= path.basename(req.body.productImage);
+}else{
+        imagepath= req.file.location ;
+}
+//  console.log('file json',req.file)
+//  console.log("body json",req.body);
+
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
-    // name: req.body.body.name,
-    // price: req.body.body.price,
-   // productImage: req.body.body.productImage
-//res.file.path
-   productImage: req.file.path
+    productImage:imagepath,
   });
   product
     .save()
@@ -134,7 +132,7 @@ exports.products_update_product = (req, res, next) => {
 
 exports.products_delete = (req, res, next) => {
   const id = req.params.productId;
-  Product.remove({ _id: id })
+  Product.deleteOne({ _id: id })
     .exec()
     .then(result => {
       res.status(200).json({
